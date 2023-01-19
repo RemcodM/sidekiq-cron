@@ -300,6 +300,7 @@ module Sidekiq
           @message = args["message"]
           message_data = Sidekiq.load_json(@message) || {}
           @queue = message_data['queue'] || "default"
+          puts "[SidekiqCron] No message_data['queue'] found in message" unless message_data['queue']
         elsif @klass
           message_data = {
             "class" => @klass.to_s,
@@ -316,6 +317,7 @@ module Sidekiq
                 Sidekiq::Cron::Support.constantize(@klass).get_sidekiq_options
               rescue Exception => e
                 # Unknown class
+                puts "[SidekiqCron] Exception while getting class options: #{e.inspect}"
                 {"queue"=>"default"}
               end
           end
@@ -327,8 +329,11 @@ module Sidekiq
           if args['queue']
             @queue = message_data['queue'] = args['queue']
           else
+            puts "[SidekiqCron] No queue set in arguments for job, using message queue or default"
             @queue = message_data['queue'] || "default"
           end
+
+          puts "[SidekiqCron] Final queue for #{@klass} = #{queue}"
 
           @message = message_data
         end
