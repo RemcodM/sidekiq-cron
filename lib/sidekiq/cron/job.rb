@@ -333,7 +333,7 @@ module Sidekiq
             @queue = message_data['queue'] || "default"
           end
 
-          puts "[SidekiqCron] Final queue for #{@klass} = #{queue}"
+          puts "[SidekiqCron] Final queue for #{@klass} = #{@queue}"
 
           @message = message_data
         end
